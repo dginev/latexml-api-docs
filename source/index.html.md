@@ -1,14 +1,13 @@
 ---
-title: API Reference
+title: LaTeXML Cookbook
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
-  - python
-  - javascript
+  - perl
+  - http
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
+  - <a href='https://latexml.mathweb.org/editor'>LaTeXML showcase</a>
   - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -17,223 +16,143 @@ includes:
 search: true
 ---
 
+# WORK IN PROGRESS
+
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to a practical cookbook of LaTeXML-related invocations, and customization switches. This resource contains a variety of recipes for using LaTeXML and its ecosystem, as well as a full enumeration of the public API
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+# Basic use
 
-This example API documentation page was created with [Slate](https://github.com/slatedocs/slate). Feel free to edit it and use it as a base for your own API's documentation.
+The most common use pattern is to produce an HTML5 equivalent for a given TeX input, which we'll use to get started.
 
-# Authentication
+> We start with a simple hello world snippet
 
-> To authorize, use this code:
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+```tex
+% file.tex
+\documentclass{article}
+\begin{document}
+Hello World!
+\end{document}
 ```
 
-```python
-import kittn
+> And convert:
 
-api = kittn.authorize('meowmeowmeow')
+```perl
+use LaTeXML;
+use LaTeXML::Common::Config;
+
+my $config = LaTeXML::Common::Config->new(format=>'html5');
+my $converter = LaTeXML->get_converter($config);
+
+$response = $converter->convert('file.tex');
+
+my ($result, $log, $status, $status_code) = map {$$response{$_}} qw(result log status status_code);
 ```
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+latexml file.tex --dest=file.xml
+latexmlpost file.xml --dest=file.html
+
+# Alternatively, latexmlc = latexml+latexmlpost+(optional http client)
+latexmlc file.tex --dest=file.html
 ```
 
-```javascript
-const kittn = require('kittn');
+```http
+POST /convert HTTP/1.1
+Host: latexml.mathweb.org
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 30
 
-let api = kittn.authorize('meowmeowmeow');
+tex=Hello%20World!&format=html
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+In a nutshell, LaTeXML will always start with an input in the TeX/LaTeX ecosystem, and map it into a target format of choice, with a wide range of choices for customizing individual aspects of the conversion. This documentation effort will try to enumerate as many as possible from the pragmatic uses of LaTeXML we know of, with brief explanations of the exact invocation.
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You can use the Perl API once you have a native installation of LaTeXML, e.g. via a package manager, cpanminus, or cpan. See <a href="https://dlmf.nist.gov/LaTeXML/get.html">the official installation docs</a>for details.
+</aside>
+<aside class="notice">
+The HTTP request examples are based on an endpoint of the plugin <a href="https://github.com/dginev/LaTeXML-Plugin-ltxmojo">LaTeXML::Plugin::ltxmojo</a>, which also contains a showcase web editor.
 </aside>
 
-# Kittens
+LaTeXML can be used with different degrees of complexity, proportionally to the complexity of the input text. Certain questions only become relevant with document size (e.g. cross-linking multiple web pages corresponding to book chapters), while others become relevant with input volume (e.g. converting millions of individual formulas from Wikipedia).
 
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+<aside class="notice">
+The latexmlc, HTTP and Perl API examples all rely on the same concrete implementation, realized via the LaTeXML.pm interface.
 </aside>
 
-## Get a Specific Kitten
+# Converting a single formula
 
-```ruby
-require 'kittn'
+On the command side, you have the choice between using the dedicated out-of-the-box `latexmlmath` executable, or the omni-executable `latexmlc`, for "formula-to-formula" conversions. We will provide examples using both `latexmlmath` and `latexmlc` where possible.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
+## To Presentation MathML
 
 ```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
+# The general form of latexmlmath is:
+latexmlmath '\sqrt{x}'
+
+# The equivalent formula-to-formula call of latexmlc is:
+latexmlc --whatsin=math --whatsout=math --format=html 'literal:\sqrt{x}'
 ```
 
-```javascript
-const kittn = require('kittn');
+```perl
+my $converter = LaTeXML->get_converter(LaTeXML::Common::Config->new(
+  whatsin=>'math', whatsout=>'math', format=>'html' ));
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+$converter->convert('literal:\sqrt{x}');
 ```
 
-> The above command returns JSON structured like this:
+```http
+POST /convert HTTP/1.1
+Host: latexml.mathweb.org
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 57
 
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
-}
+tex=%5Csqrt%7Bx%7D&whatsin=math&whatsout=math&format=html
 ```
 
-This endpoint retrieves a specific kitten.
+> Result:
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-### HTTP Request
-
-`GET http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
-
-## Delete a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
+```xml
+<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="\sqrt{x}" display="block">
+  <msqrt>
+    <mi>x</mi>
+  </msqrt>
+</math>
 ```
 
-```python
-import kittn
+Presentation MathML is the default output of `latexmlmath`, and is also the default serialization for all of LaTeXML's post-processing formats (ePub, (X)HTML, JATS, ...). Instead, the defaults for `latexml` and `latexmlc` target LaTeXML's own XML schema, as they do not include post-processing in a default run.
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
+
+## To full MathML (presentation+content)
 
 ```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
+# Cross-referenced presentation and content in a single formula output:
+latexmlc --pmml --cmml --whatsin=math --whatsout=math --format=html 'literal:\sqrt{x}'
+
+# Alternatively, separate presentation and content written in single-formula files:
+latexmlmath --pmml=sqrt.pmml --cmml=sqrt.cmml '\sqrt{x}'
 ```
 
-```javascript
-const kittn = require('kittn');
+## To full MathML with annotations
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
+## To SVG image
 
-> The above command returns JSON structured like this:
+## To PNG image
 
-```json
-{
-  "id": 2,
-  "deleted" : ":("
-}
-```
+# Short article
 
-This endpoint deletes a specific kitten.
+# Book-sized manuscript
 
-### HTTP Request
+# Advanced Uses for Mathematics
 
-`DELETE http://example.com/kittens/<ID>`
+# Advanced Uses for Formats (EPUB, JATS)
 
-### URL Parameters
+# Batch processing
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
 
+# API
+
+## All Customization switches
+...
