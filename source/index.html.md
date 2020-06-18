@@ -11,6 +11,7 @@ toc_footers:
   - <a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a>
 
 includes:
+  - api
   - errors
 
 search: true
@@ -151,8 +152,4 @@ latexmlmath --pmml=sqrt.pmml --cmml=sqrt.cmml '\sqrt{x}'
 
 # Batch processing
 
-
-# API
-
-## All Customization switches
 ...
