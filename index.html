@@ -276,6 +276,23 @@
           </li>
           <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#status-codes" class="toc-h2 toc-link" data-title="Status Codes">Status Codes</a>
+                  </li>
+                  <li>
+                    <a href="#no-problems" class="toc-h2 toc-link" data-title="No Problems">No Problems</a>
+                  </li>
+                  <li>
+                    <a href="#warning" class="toc-h2 toc-link" data-title="Warning">Warning</a>
+                  </li>
+                  <li>
+                    <a href="#error" class="toc-h2 toc-link" data-title="Error">Error</a>
+                  </li>
+                  <li>
+                    <a href="#fatal" class="toc-h2 toc-link" data-title="Fatal">Fatal</a>
+                  </li>
+              </ul>
           </li>
       </ul>
         <ul class="toc-footer">
@@ -372,18 +389,46 @@ latexmlc <span class="nt">--pmml</span> <span class="nt">--cmml</span> <span cla
 
 <span class="c"># Alternatively, separate presentation and content written in single-formula files:</span>
 latexmlmath <span class="nt">--pmml</span><span class="o">=</span>sqrt.pmml <span class="nt">--cmml</span><span class="o">=</span>sqrt.cmml <span class="s1">'\sqrt{x}'</span>
-</code></pre></div><h2 id='to-full-mathml-with-annotations'>To full MathML with annotations</h2><h2 id='to-svg-image'>To SVG image</h2><h2 id='to-png-image'>To PNG image</h2><h1 id='short-article'>Short article</h1><h1 id='book-sized-manuscript'>Book-sized manuscript</h1><h1 id='advanced-uses-for-mathematics'>Advanced Uses for Mathematics</h1><h1 id='advanced-uses-for-formats-epub-jats'>Advanced Uses for Formats (EPUB, JATS)</h1><h1 id='batch-processing'>Batch processing</h1><h1 id='api'>API</h1><h2 id='all-customization-switches'>All Customization switches</h2>
+</code></pre></div><h2 id='to-full-mathml-with-annotations'>To full MathML with annotations</h2><h2 id='to-svg-image'>To SVG image</h2><h2 id='to-png-image'>To PNG image</h2><h1 id='short-article'>Short article</h1><h1 id='book-sized-manuscript'>Book-sized manuscript</h1><h1 id='advanced-uses-for-mathematics'>Advanced Uses for Mathematics</h1><h1 id='advanced-uses-for-formats-epub-jats'>Advanced Uses for Formats (EPUB, JATS)</h1><h1 id='batch-processing'>Batch processing</h1>
 <p>...</p>
-<h1 id='errors'>Errors</h1>
+<h1 id='api'>API</h1><h2 id='all-customization-switches'>All Customization switches</h2><h1 id='errors'>Errors</h1>
 <aside class="notice">
 This error section is stored in a separate file in <code>includes/_errors.md</code>. Slate allows you to optionally separate out your docs into many files...just save them to the <code>includes</code> folder and add them to the top of your <code>index.md</code>'s frontmatter. Files are included in the order listed.
 </aside>
 
 <p>LaTeXML has a sizeable collection of different errors, which have evolved over time from stress testing the application over the 1+ million articles in arXiv.org. The general convention is introduced in the manual <a href="https://dlmf.nist.gov/LaTeXML/manual/errorcodes/">link here</a>. In this cookbook, we try to enumerate the intuitions of each concrete error message.</p>
+<h2 id='status-codes'>Status Codes</h2>
+<p>Each conversion ends with a given severity, or status, coded as:</p>
 
 <table><thead>
 <tr>
-<th>Error Severity</th>
+<th>Severity/Status</th>
+<th>Code</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>no_problem</td>
+<td>0</td>
+</tr>
+<tr>
+<td>warning</td>
+<td>1</td>
+</tr>
+<tr>
+<td>error</td>
+<td>2</td>
+</tr>
+<tr>
+<td>fatal</td>
+<td>3</td>
+</tr>
+</tbody></table>
+<h2 id='no-problems'>No Problems</h2>
+<p>When no error-level messages are emitted during conversion and post-processing, the results is considered to have &quot;No Obvious Problems&quot; and terminates successfully.</p>
+<h2 id='warning'>Warning</h2>
+<table><thead>
+<tr>
+<th>Severity</th>
 <th>Category</th>
 <th>What</th>
 <th>Description</th>
@@ -391,9 +436,139 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
 </thead><tbody>
 <tr>
 <td>Warning</td>
+<td>expected</td>
+<td><code>&lt;metadata&gt;</code></td>
+<td>expected metadata was not found, such as the refered targets of labels, sources of graphics inclusions, or missing numeric arguments for some assignments (treated as zero)</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>imageprocessing</td>
+<td>Crop</td>
+<td>empty images can not be cropped, minor, ignored.</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>latex</td>
+<td>\GenericWarning</td>
+<td>Usually when a <code>.sty</code> or <code>.cls</code> file is interpreted raw, and latexml triggers a warning coded by the original package author.</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>limitation</td>
+<td><code>&lt;filename&gt;</code></td>
+<td>Usually a complex transform limitation in <code>Post::Graphics</code>, operation may be ignored.</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>malformed</td>
+<td>labels</td>
+<td>No open node can be assigned labels, so the labels in question will be dropped.</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>misdefined</td>
+<td><code>\command</code></td>
+<td>minor convention violations, e.g. a conditional macro being defined without starting with an <code>\if</code> prefix.</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>missing_file</td>
+<td><code>&lt;filename&gt;</code></td>
+<td>A raw TeX dependency (usually <code>.sty</code>, <code>.cls</code> or <code>.def</code>) can not be loaded. Either the dependency is missing from the system entirely, or when <code>--includestyles</code> is <strong>not</strong> specified, a <code>.ltxml</code> binding is missing.</td>
+</tr>
+<tr>
+<td>Warning</td>
 <td>not_parsed</td>
-<td><GRAMMAR_ROLES+></td>
+<td><code>&lt;GRAMMAR_ROLES+&gt;</code></td>
 <td>A warning emitted when latexml&#39;s MathGrammar fails to construct a tree for a given TeX formula. The error includes a window of the grammar lexemes where the parse failed to proceed.</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>perl</td>
+<td>warn</td>
+<td>A native perl warning that did not have a dedicated handler, e.g. redefined subroutines; wrong offsets in indexing</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>undefined</td>
+<td><code>&lt;name&gt;</code></td>
+<td>an undefined construct with minor impact was encountered, commonly a TeX counter</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>unexpected</td>
+<td><code>&lt;construct&gt;</code></td>
+<td>A macro, value, XML element, or inclusion was not expected in the current context, but a clear recovery path is known.</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>uninitialized</td>
+<td><code>&lt;$value&gt;</code></td>
+<td>Caught a native perl warning when encountering operations over uninitialized variables</td>
+</tr>
+</tbody></table>
+<h2 id='error'>Error</h2>
+<table><thead>
+<tr>
+<th>Severity</th>
+<th>Category</th>
+<th>What</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Error</td>
+<td>expected</td>
+<td><code>&lt;token&gt;</code></td>
+<td>Cases where a mandatory argument was necessary, but no argument was available. Processing proceeds with an empty or default value.</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>I/O</td>
+<td><code>&lt;filename&gt;</code></td>
+<td>Could not read auxiliary file, ignoring when caught.</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>imageprocessing</td>
+<td>`Read</td>
+<td>Scale</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>latex</td>
+<td>\GenericError</td>
+<td>Usually seen when a <code>.sty</code> or <code>.cls</code> file is interpreted raw, and latexml triggers an error coded by the original package author. Generally due to latexml mistakes in emulating pdflatex.</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>malformed</td>
+<td><code>&lt;ns:element&gt;</code></td>
+<td>The document construction phase could not use the given element in the document fragment built so far, as enforced by the latexml XML schema. Usually a result of a previous processing error, sometimes a discrepancy between the TeX boxing model and the XML tree paradigm.</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>misdefined</td>
+<td><code>&lt;token&gt;</code></td>
+<td>A token was not meaningful in the current context (e.g. it reached the stomach without a definition, or was not part of a mini language for a package, as in an RGB color specification). Usually processing ignores the token and proceeds.</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>missing_file</td>
+<td><code>&lt;filename&gt;</code></td>
+<td>can&#39;t read an auxiliary file for a binding macro, usually left ignored as empty.</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>pgfparse</td>
+<td>pgfparse</td>
+<td>failure to parse a pgf expression, either due to bad syntax, or latexml binding deficiency</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>recursion</td>
+<td><code>\command</code></td>
+<td>Macro may be defined as expanding into itself, which would be an infinite loop if unchecked. Expansion is ignored when caught.</td>
 </tr>
 <tr>
 <td>Error</td>
@@ -402,10 +577,98 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
 <td>An error where a TeX <code>\command</code> was attempted to be digested without first being defined. While this could be an author error, it is also common where prerequisite <code>.sty</code> or <code>.cls</code> libraries were not present or failed to correctly load.</td>
 </tr>
 <tr>
+<td>Error</td>
+<td>unexpected</td>
+<td><code>\command</code> or <code>&lt;token&gt;</code></td>
+<td>Processing did not expect the content at this expansion point. Any of: ending a wrong mode or environment; using a construct in the wrong TeX mode; or expanding illegal content in restricted processing (such as inside <code>\csname</code>).</td>
+</tr>
+</tbody></table>
+<h2 id='fatal'>Fatal</h2>
+<table><thead>
+<tr>
+<th>Severity</th>
+<th>Category</th>
+<th>What</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Fatal</td>
+<td>die</td>
+<td><code>&lt;filename&gt;</code></td>
+<td>A native perl death, as in <code>Fatal:perl:die</code>, caught by a different handler (to be refactored)</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>expected</td>
+<td><code>&lt;tokens&gt;</code></td>
+<td>Expected specific tokens that were not found, usually as part of a matching the signature of a TeX macro&#39;s arguments.</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>I/O</td>
+<td>unreadable</td>
+<td>It was impossible to read a mandatory file</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>internal</td>
+<td><code>&lt;recursion&gt;</code></td>
+<td>Detected an infinite recursion  during TeX expansion, leading to a hard abort.</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>invalid</td>
+<td>binary</td>
+<td>main TeX source seems to have been a binary file, abort.</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>invalid</td>
+<td>archive</td>
+<td>did not detect a main TeX source when examining an input archive, abort.</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>misdefined</td>
+<td><code>\command</code></td>
+<td>The defined expansion of the macro in question was considered unusable (e.g. unbalanced {})</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>missing_file</td>
+<td><code>&lt;filename&gt;</code></td>
+<td>The main TeX file was missing from the file system</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>perl</td>
+<td>deep_recursion</td>
+<td>Perl exceeded its maximum allowed recursion depth in native subroutine calls. This could indicate an infinite loop, so is treated as a hard abort.</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>perl</td>
+<td>die</td>
+<td>critical error in native Perl, usually preceded by a cascade of lighter errors with TeX interpretation</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>timeout</td>
+<td>timedout</td>
+<td>Took longer than the alloted <code>--timeout</code> seconds, and aborted.</td>
+</tr>
+<tr>
 <td>Fatal</td>
 <td>too_many_errors</td>
 <td>100</td>
 <td>When latexml encounters 100 errors, it considers the document too badly broken to continue, and terminates early without creating any output.</td>
+</tr>
+<tr>
+<td>Fatal</td>
+<td>unexpected</td>
+<td><code>&lt;endgroup&gt;</code></td>
+<td>Conversion ran into too many closing groups, the last of which was locked and should have never been ended</td>
 </tr>
 </tbody></table>
 
