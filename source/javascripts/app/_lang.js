@@ -15,7 +15,7 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations
 under the License.
 */
-;(function () {
+; (function () {
   'use strict';
 
   var languages = [];
@@ -30,7 +30,7 @@ under the License.
 
     $(".lang-selector a").removeClass('active');
     $(".lang-selector a[data-language-name='" + language + "']").addClass('active');
-    for (var i=0; i < languages.length; i++) {
+    for (var i = 0; i < languages.length; i++) {
       $(".highlight.tab-" + languages[i]).hide();
       $(".lang-specific." + languages[i]).hide();
     }
@@ -129,11 +129,16 @@ under the License.
     history.pushState({}, '', '?' + generateNewQueryString(language) + '#' + hash);
 
     // save language as next default
-    localStorage.setItem("language", language);
+    if (localStorage) {
+      localStorage.setItem("language", language);
+    }
   }
 
   function setupLanguages(l) {
-    var defaultLanguage = localStorage.getItem("language");
+    var defaultLanguage = null;
+    if (localStorage) {
+      defaultLanguage = localStorage.getItem("language");
+    }
 
     languages = l;
 
@@ -142,7 +147,9 @@ under the License.
       // the language is in the URL, so use that language!
       activateLanguage(presetLanguage);
 
-      localStorage.setItem("language", presetLanguage);
+      if (localStorage) {
+        localStorage.setItem("language", presetLanguage);
+      }
     } else if ((defaultLanguage !== null) && (jQuery.inArray(defaultLanguage, languages) != -1)) {
       // the language was the last selected one saved in localstorage, so use that language!
       activateLanguage(defaultLanguage);
@@ -153,8 +160,8 @@ under the License.
   }
 
   // if we click on a language tab, activate that language
-  $(function() {
-    $(".lang-selector a").on("click", function() {
+  $(function () {
+    $(".lang-selector a").on("click", function () {
       var language = $(this).data("language-name");
       pushURL(language);
       activateLanguage(language);
