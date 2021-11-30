@@ -196,9 +196,9 @@
   color: #f92672;
 }
     </style>
-    <link href="stylesheets/screen-fc45a7d5.css" rel="stylesheet" media="screen" />
-    <link href="stylesheets/print-c427a123.css" rel="stylesheet" media="print" />
-      <script src="javascripts/all-c5541673.js"></script>
+    <link href="stylesheets/screen-6cff39df.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print-0f30fa12.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all-050a2927.js"></script>
   </head>
 
   <body class="index" data-languages="[&quot;shell&quot;,&quot;perl&quot;,&quot;http&quot;]">
@@ -323,12 +323,12 @@ Hello World!
 <div class="highlight"><pre class="highlight perl tab-perl"><code><span class="k">use</span> <span class="nv">LaTeXML</span><span class="p">;</span>
 <span class="k">use</span> <span class="nn">LaTeXML::Common::</span><span class="nv">Config</span><span class="p">;</span>
 
-<span class="k">my</span> <span class="nv">$config</span> <span class="o">=</span> <span class="nn">LaTeXML::Common::</span><span class="nv">Config</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="nb">format</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">html5</span><span class="p">');</span>
+<span class="k">my</span> <span class="nv">$config</span> <span class="o">=</span> <span class="nn">LaTeXML::Common::</span><span class="nv">Config</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span><span class="s">format</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">html5</span><span class="p">');</span>
 <span class="k">my</span> <span class="nv">$converter</span> <span class="o">=</span> <span class="nv">LaTeXML</span><span class="o">-&gt;</span><span class="nv">get_converter</span><span class="p">(</span><span class="nv">$config</span><span class="p">);</span>
 
 <span class="nv">$response</span> <span class="o">=</span> <span class="nv">$converter</span><span class="o">-&gt;</span><span class="nv">convert</span><span class="p">('</span><span class="s1">file.tex</span><span class="p">');</span>
 
-<span class="k">my</span> <span class="p">(</span><span class="nv">$result</span><span class="p">,</span> <span class="nv">$log</span><span class="p">,</span> <span class="nv">$status</span><span class="p">,</span> <span class="nv">$status_code</span><span class="p">)</span> <span class="o">=</span> <span class="nb">map</span> <span class="p">{</span><span class="nv">$$response</span><span class="p">{</span><span class="nv">$_</span><span class="p">}}</span> <span class="sx">qw(result log status status_code)</span><span class="p">;</span>
+<span class="k">my</span> <span class="p">(</span><span class="nv">$result</span><span class="p">,</span> <span class="nv">$log</span><span class="p">,</span> <span class="nv">$status</span><span class="p">,</span> <span class="nv">$status_code</span><span class="p">)</span> <span class="o">=</span> <span class="nb">map</span> <span class="p">{</span><span class="nv">$$response</span><span class="p">{</span><span class="vg">$_</span><span class="p">}}</span> <span class="sx">qw(result log status status_code)</span><span class="p">;</span>
 </code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>latexml file.tex <span class="nt">--dest</span><span class="o">=</span>file.xml
 latexmlpost file.xml <span class="nt">--dest</span><span class="o">=</span>file.html
 
@@ -364,9 +364,9 @@ latexmlmath <span class="s1">'\sqrt{x}'</span>
 <span class="c"># The equivalent formula-to-formula call of latexmlc is:</span>
 latexmlc <span class="nt">--whatsin</span><span class="o">=</span>math <span class="nt">--whatsout</span><span class="o">=</span>math <span class="nt">--format</span><span class="o">=</span>html <span class="s1">'literal:\sqrt{x}'</span>
 </code></pre></div><div class="highlight"><pre class="highlight perl tab-perl"><code><span class="k">my</span> <span class="nv">$converter</span> <span class="o">=</span> <span class="nv">LaTeXML</span><span class="o">-&gt;</span><span class="nv">get_converter</span><span class="p">(</span><span class="nn">LaTeXML::Common::</span><span class="nv">Config</span><span class="o">-&gt;</span><span class="k">new</span><span class="p">(</span>
-  <span class="nv">whatsin</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">math</span><span class="p">',</span> <span class="nv">whatsout</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">math</span><span class="p">',</span> <span class="nb">format</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">html</span><span class="p">'</span> <span class="p">));</span>
+  <span class="s">whatsin</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">math</span><span class="p">',</span> <span class="s">whatsout</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">math</span><span class="p">',</span> <span class="s">format</span><span class="o">=&gt;</span><span class="p">'</span><span class="s1">html</span><span class="p">'</span> <span class="p">));</span>
 
-<span class="nv">$converter</span><span class="o">-&gt;</span><span class="nv">convert</span><span class="p">('</span><span class="s1">literal:</span><span class="err">\</span><span class="s1">sqrt{x}</span><span class="p">');</span>
+<span class="nv">$converter</span><span class="o">-&gt;</span><span class="nv">convert</span><span class="p">('</span><span class="s1">literal:\sqrt{x}</span><span class="p">');</span>
 </code></pre></div><div class="highlight"><pre class="highlight http tab-http"><code><span class="nf">POST</span> <span class="nn">/convert</span> <span class="k">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Host</span><span class="p">:</span> <span class="s">latexml.mathweb.org</span>
 <span class="na">Content-Type</span><span class="p">:</span> <span class="s">application/x-www-form-urlencoded</span>
